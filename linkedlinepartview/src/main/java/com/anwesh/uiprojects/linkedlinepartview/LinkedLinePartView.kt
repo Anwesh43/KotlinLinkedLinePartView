@@ -98,6 +98,7 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             val ox : Float = w * (i %2)
             val dx : Float = w/2
             val x : Float = ox + (dx - ox) * state.scale
+            prev?.draw(canvas, paint)
             canvas.save()
             canvas.translate(x, h/4 + gap * i)
             canvas.drawLine(0f, 0f, 0f, gap, paint)
@@ -110,6 +111,42 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
 
         fun startUpdating(startcb : () -> Unit) {
             state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit): LLPNode {
+            var curr : LLPNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
+
+    data class LinkedLinePart (var i : Int) {
+
+        private var curr : LLPNode = LLPNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
         }
     }
 }
