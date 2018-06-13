@@ -9,6 +9,7 @@ import android.graphics.*
 import android.view.View
 import android.view.MotionEvent
 
+val LLP_NODES = 6
 class LinkedLinePartView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -71,6 +72,44 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class LLPNode (var i : Int, val state : State = State()) {
+
+        private var next : LLPNode? = null
+
+        private var prev : LLPNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < LLP_NODES - 1) {
+                next = LLPNode(i + 1)
+                next?.prev = this
+            }
+        }
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = (h / (2 * LLP_NODES))
+            val ox : Float = w * (i %2)
+            val dx : Float = w/2
+            val x : Float = ox + (dx - ox) * state.scale
+            canvas.save()
+            canvas.translate(x, h/4 + gap * i)
+            canvas.drawLine(0f, 0f, 0f, gap, paint)
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
         }
     }
 }
