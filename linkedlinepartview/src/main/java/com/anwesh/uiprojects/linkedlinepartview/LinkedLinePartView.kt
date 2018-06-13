@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedlinepartview
  * Created by anweshmishra on 13/06/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.view.View
@@ -175,6 +176,14 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             llp.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedLinePartView {
+            val view : LinkedLinePartView = LinkedLinePartView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
