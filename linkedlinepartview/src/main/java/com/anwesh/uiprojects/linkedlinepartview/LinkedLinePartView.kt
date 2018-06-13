@@ -149,4 +149,30 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedLinePartView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val llp : LinkedLinePart = LinkedLinePart(0)
+
+        fun render(canvas: Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            paint.color = Color.parseColor("#ecf0f1")
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.strokeWidth = 5f
+            llp.draw(canvas, paint)
+            animator.animate {
+                llp.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            llp.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
