@@ -97,10 +97,17 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
+            paint.style = Paint.Style.STROKE
             val gap : Float = (h / (2 * LLP_NODES))
             val ox : Float = w * (i %2)
             val dx : Float = w/2
+            var deg : Float = 360f / LLP_NODES
             val x : Float = ox + (dx - ox) * state.scale
+            canvas.save()
+            canvas.translate(w/2, h/8)
+            val r : Float = Math.min(w, h) / 6
+            canvas.drawArc(RectF(-r, -r, r, r), deg * i, deg * state.scale, false, paint)
+            canvas.restore()
             prev?.draw(canvas, paint)
             canvas.save()
             canvas.translate(x, h/4 + gap * i)
@@ -163,7 +170,7 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             canvas.drawColor(Color.parseColor("#212121"))
             paint.color = Color.parseColor("#ecf0f1")
             paint.strokeCap = Paint.Cap.ROUND
-            paint.strokeWidth = 5f
+            paint.strokeWidth = 11f
             llp.draw(canvas, paint)
             animator.animate {
                 llp.update {
