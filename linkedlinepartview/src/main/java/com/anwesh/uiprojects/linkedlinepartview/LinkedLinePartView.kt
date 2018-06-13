@@ -95,6 +95,7 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             }
         }
         fun draw(canvas : Canvas, paint : Paint) {
+            prev?.draw(canvas, paint)
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
             paint.style = Paint.Style.STROKE
@@ -105,10 +106,11 @@ class LinkedLinePartView(ctx : Context) : View(ctx) {
             val x : Float = ox + (dx - ox) * state.scale
             canvas.save()
             canvas.translate(w/2, h/8)
-            val r : Float = Math.min(w, h) / 6
-            canvas.drawArc(RectF(-r, -r, r, r), deg * i, deg * state.scale, false, paint)
+            val r : Float = Math.min(w, h) / 12
+            if (state.scale != 0f) {
+                canvas.drawArc(RectF(-r, -r, r, r), deg * i, deg * state.scale, false, paint)
+            }
             canvas.restore()
-            prev?.draw(canvas, paint)
             canvas.save()
             canvas.translate(x, h/4 + gap * i)
             canvas.drawLine(0f, 0f, 0f, gap, paint)
